@@ -18,7 +18,7 @@ class RecipesTopping(Topping):
         if entry is None or len(entry) == 0:
             return '<div class="no entry"></div>'
         else:
-            id = entry[0]['makes']['id']
+            id = key
             aggregate = '<a id="%s"></a>' % self.anchor(id)
             for recipe in entry:
                 aggregate += self._entry(self.parse_entry(recipe, key),
@@ -40,19 +40,14 @@ class RecipesTopping(Topping):
 
     def parse_entry(self, entry, key):
         result = self.craft_item(entry["makes"])
-        if entry["amount"] > 1:
-            result += '<div class="amount">%s</div>' % entry["amount"]
-        if entry["metadata"] != 0:
-            result += '<div class="metadata">%s</div>' % entry["metadata"]
         aggregate = ""
         if entry["type"] == "shape":
             materials = {' ': '<div class="empty"></div>'}
-            for key, material in entry["raw"]["subs"].iteritems():
-                materials[key] = self.craft_item(material)
+            for key, item in entry["raw"]["subs"].iteritems():
+                materials[key] = self.craft_item(item)
             rows = entry["raw"]["rows"]
             for i in range(3 - len(rows)):
                 rows.append("   ")
-            rows.reverse()
             for row in rows:
                 while len(row) < 3:
                     if len(row) % 2 == 0:
@@ -78,37 +73,35 @@ class RecipesTopping(Topping):
         entry["json"] = aggregate
         return result
 
-    def craft_item(self, material):
-        if material is None:
+    def craft_item(self, item):
+        if item is None or "data" not in item:
             return '<div class="empty"></div>'
+
+        material = item["data"]
         if "display_name" in material:
             title = material["display_name"]
         elif "name" in material:
             title = material["name"]
+        elif "text_id" in material:
+            title = material["text_id"]
         else:
             title = "Unknown"
-        if "icon" in material:
-            if isinstance(material['icon'], basestring):
-                icon = (-(material['id'] % 1800 - 256) * 32, 0)
-            else:
-                icon = [-material["icon"][axis] * 32 for axis in ("x", "y")]
-            return ('<div title="%s" class="item" ' +
-                    'style="background-position:%spx %spx;"></div>') % (
-                        title, icon[0], icon[1]
-                    )
-        elif "texture" in material:
-            if isinstance(material['texture'], basestring):
-                icon = (-material['id'] * 32, 0)
-            else:
-                icon = [-material["texture"][axis] * 32 for axis in ("x", "y")]
-            return ('<div title="%s" class="texture" ' +
-                    'style="background-position:%spx %spx;"></div>') % (
-                        title, icon[0], icon[1]
-                    )
-        elif "id" in material:
-            content = material["id"]
+
+        if "numeric_id" in material:
+            content = material["numeric_id"]
             class_ = "craftitem large" if content < 100 else "craftitem"
+        elif "text_id" in material:
+            content = material["text_id"]
+            class_ = "craftitem"
         else:
             content = material
             class_ = "craftitem"
-        return '<div title="%s" class="%s">%s</div>' % (title, class_, content)
+        result = '<div title="%s" class="%s">%s' % (title, class_, content)
+
+        if "count" in item and item["count"] > 1:
+            result += '<div class="amount">%s</div>' % item["count"]
+        if "metadata" in item:
+            result += '<div class="metadata">%s</div>' % item["metadata"]
+
+        result += '</div>'
+        return result

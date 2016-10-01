@@ -95,6 +95,9 @@ def generate_html():
     if not diff:
         data = data[0]
 
+    if sprites:
+        from vitrine import extractor
+        extractor.grab_block_sprites(jar, data, resources)
     # Load packet names
     if wiki_links:
         from vitrine.wiki import CoalitionWiki
@@ -125,11 +128,14 @@ def generate_html():
         aggregate = embed(aggregate)
 
     # Output results
-    output.write(aggregate)
+    file = open(output, "w")
+    file.write(aggregate)
+    file.close()
 
 
 def extract():
     from vitrine import extractor
+    print "Extracting"
     data = None
     if not sys.stdin.isatty():
         try:
@@ -139,18 +145,18 @@ def extract():
     if not extractor.extract(jar, mode, output, data):
         sys.exit(1)
 
-
 if __name__ == '__main__':
     try:
         opts, args = getopt.gnu_getopt(
             sys.argv[1:],
-            "o:bwi:t:r:h",
+            "o:bwi:t:r:s:h",
             [
                 "output=",
                 "body",
                 "items=",
                 "terrain=",
                 "resources=",
+                "sprites=",
                 "help"
             ]
         )
@@ -163,12 +169,13 @@ if __name__ == '__main__':
     only_body = False
     mode = "html"
     jar = None
+    sprites = False
     wiki_links = False
     resources = "resources/"
 
     for o, a in opts:
         if o in ("-o", "--output"):
-            output = open(a, "w")
+            output = a
         elif o in ("-b", "--body"):
             only_body = True
         elif o in ("-w", "--wiki"):
@@ -182,6 +189,9 @@ if __name__ == '__main__':
             jar = a
         elif o in ("-t", "--terrain"):
             mode = "terrain"
+            jar = a
+        elif o in ("-s", "--sprites"):
+            sprites = True
             jar = a
         elif o in ("-h", "--help"):
             usage()

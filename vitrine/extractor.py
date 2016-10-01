@@ -8,8 +8,10 @@ from StringIO import StringIO
 
 from solum import JarFile
 
+import os
+
 try:
-    import Image
+    from PIL import Image
 except:
     try:
         from Imaging import Image
@@ -56,8 +58,7 @@ def extract_indivdual(jar, file, output, data):
 def extract_indivdual_items(jar, output, data):
     items = {}
     for item in data[0]['items']['item'].itervalues():
-        if "icon" in item:
-            items[item['id'] % 1800 - 256] = item['icon']
+        items[item['numeric_id']] = item['text_id']
 
     img = combine_textures(jar, items, "assets/minecraft/textures/items")
     img.save(output, format="PNG")
@@ -68,8 +69,7 @@ def extract_indivdual_items(jar, output, data):
 def extract_indivdual_blocks(jar, output, data):
     blocks = {}
     for block in data[0]['blocks']['block'].itervalues():
-        if "texture" in block:
-            blocks[block['id']] = block['texture']
+        blocks[block['numeric_id']] = block['text_id']
 
     img = combine_textures(jar, blocks, "assets/minecraft/textures/blocks")
     img.save(output, format="PNG")
@@ -93,3 +93,35 @@ def combine_textures(jar, textures, location):
         image.paste(texture_img, (id_ * 16, 0), texture_img)
 
     return image.resize(tuple(s * 2 for s in image.size))
+
+def grab_block_sprites(jar, data, resources):
+    try:
+        jar = JarFile(jar)
+    except:
+        print "Opening jar file failed"
+        return
+
+    if not os.path.isdir(resources + "blocks"):
+        os.makedirs(resources + "blocks")
+    for block in data['blocks']['block'].itervalues():
+        if "text_id" in block:
+            path = "assets/minecraft/textures/blocks/%s.png" % block["text_id"]
+            out_path = resources + "blocks/%s.png" % block["text_id"]
+            if path in jar.zp.namelist():
+                image = jar.zp.read(path)
+                file = open(out_path, 'wb')
+                file.write(image)
+                file.close()
+                block['has_image'] = True
+    if not os.path.isdir(resources + "items"):
+        os.makedirs(resources + "items")
+    for item in data['items']['item'].itervalues():
+        if "text_id" in block:
+            path = "assets/minecraft/textures/items/%s.png" % item["text_id"]
+            out_path = resources + "items/%s.png" % item["text_id"]
+            if path in jar.zp.namelist():
+                image = jar.zp.read(path)
+                file = open(out_path, 'wb')
+                file.write(image)
+                file.close()
+                block['has_image'] = True

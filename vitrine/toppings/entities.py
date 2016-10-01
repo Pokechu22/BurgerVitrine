@@ -20,4 +20,6 @@ class EntitiessTopping(Topping):
     PRIORITY = 7.2
 
     def parse_entry(self, entry, key=None):
+        if not "name" in entry:
+            return entry["id"]
         return entry["name"]

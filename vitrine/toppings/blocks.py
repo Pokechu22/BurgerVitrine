@@ -10,7 +10,8 @@ from .itemtitletopping import ItemTitleTopping
 class BlocksTopping(ItemTitleTopping):
     KEY = "blocks.block"
     NAME = "Blocks"
-    ITEMS = (("id", "ID"),
+    ITEMS = (("text_id", "ID"),
+             ("numeric_id", "Numeric ID"),
              ("name", "Name"),
              ("hardness", "Hardness"))
     ESCAPE_TITLE = False
@@ -19,28 +20,32 @@ class BlocksTopping(ItemTitleTopping):
     def SORTING(self, (k, v)):
         if self.diff:
             if v[0] is not None:
-                return int(v[0]["id"]), k
+                return v[0]["text_id"], k
             else:
-                return int(v[1]["id"]), k
+                return v[1]["text_id"], k
         else:
-            return int(v["id"]), k
+            return v["text_id"], k
 
     def parse_entry(self, entry, key):
         if "display_name" in entry:
             entry["name"] = entry["display_name"]
         elif "name" not in entry:
             entry["name"] = "Unknown"
-        if "texture" in entry:
-            if isinstance(entry['texture'], basestring):
-                icon = (-entry['id'] * 32, 0)
-            else:
-                icon = [-entry["texture"][axis] * 32 for axis in ("x", "y")]
+        if False:
+            pass
+        #if "texture" in entry:
+        if True:
+        #    if isinstance(entry['texture'], basestring):
+            icon = (-entry['numeric_id'] * 32, 0)
+        #    else:
+        #        icon = [-entry["texture"][axis] * 32 for axis in ("x", "y")]
             return ('<div title="%s" class="texture" ' +
                     'style="background-position:%spx %spx;"></div>') % (
                         entry["name"], icon[0], icon[1]
-                    ), entry["id"]
+                    ), entry["numeric_id"]
         else:
-            class_ = "craftitem large" if entry["id"] < 100 else "craftitem"
+            #class_ = "craftitem large" if entry["id"] < 100 else "craftitem"
+            class_ = "craftitem"
             return '<div title="%s" class="%s">%s</div>' % (
-                entry["name"], class_, entry["id"]
-            ), entry["id"]
+                entry["name"], class_, entry["text_id"] if "text_id" in entry else entry["numeric_id"]
+            ), entry["numeric_id"]

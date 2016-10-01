@@ -10,7 +10,8 @@ from .itemtitletopping import ItemTitleTopping
 class ItemsTopping(ItemTitleTopping):
     KEY = "items.item"
     NAME = "Items"
-    ITEMS = (("id", "ID"),
+    ITEMS = (("text_id", "ID"),
+             ("numeric_id", "Numeric ID"),
              ("name", "Name"))
     SORTING = ItemTitleTopping.NUMERIC_SORT
     ESCAPE_TITLE = False
@@ -21,15 +22,16 @@ class ItemsTopping(ItemTitleTopping):
             entry["name"] = entry["display_name"]
         elif "name" not in entry:
             entry["name"] = "Unknown"
-        if "icon" in entry:
-            if isinstance(entry['icon'], basestring):
-                icon = (-(entry['id'] % 1800 - 256) * 32, 0)
-            else:
-                icon = tuple(-entry["icon"][axis] * 32 for axis in ("x", "y"))
+        #if "icon" in entry:
+        if True:
+            #if isinstance(entry['icon'], basestring):
+            icon = (-(entry['numeric_id'] % 1800 - 256) * 32, 0)
+        #    else:
+        #        icon = tuple(-entry["icon"][axis] * 32 for axis in ("x", "y"))
             style = 'background-position:%spx %spx;' % icon
         else:
             style = 'background-image:none;'
         return ('<div class="item" title="%s" ' +
                 'style="%s"></div>') % (
                     entry["name"], style
-                ), entry["id"]
+                ), entry["numeric_id"]

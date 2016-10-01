@@ -41,7 +41,18 @@ class PacketsTopping(Topping):
              "double": "writeDouble",
              "string16": "writeString",
              "string8": "writeStringUTF",
-             "byte[]": "writeBytes"
+             "byte[]": "writeBytes",
+             "varint": "writeVarInt",
+             "varlong": "writeVarLong",
+             "metadata": "writeMetadata",
+             "position": "writePosition",
+             "uuid": "writeUUID",
+             "enum": "writeVarIntEnum",
+             "nbtcompound": "writeNBTCompound",
+             "itemstack": "writeItemStack",
+             "chatcomponent": "writeChatComponent",
+             "varint[]": "writeVarIntArray",
+             "long[]": "writeLongArray"
         }
     PRIORITY = 7
 
@@ -50,9 +61,13 @@ class PacketsTopping(Topping):
             entry["from_client"],
             entry["from_server"]
         )]
-        entry["code"] = self.code(entry["instructions"])
+        if "instructions" in entry:
+            entry["code"] = self.code(entry["instructions"])
+        else:
+            entry["code"] = ""
         
-        title = "0x%02x" % entry["id"]
+        #title = "0x%02x" % entry["id"]
+        title = key
         if "name" in entry:
             title = "%s (%s)" % (entry["name"], title)
         elif self.wiki_links:
@@ -125,6 +140,13 @@ class PacketsTopping(Topping):
                     instr["field"],
                     instr["amount"]
                 ), level)
+            close = False
+        elif instr["operation"] == "store":
+            aggregate += self.indent("%s %s = %s;" % (
+                instr["type"],
+                instr["var"],
+                instr["value"]
+            ), level)
             close = False
         else:
             aggregate += self.indent("// %s" % instr["operation"], level)

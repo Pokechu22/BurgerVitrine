@@ -131,4 +131,4 @@ class Topping(object):
             return anchor + ":" + self._anchor_escape(child)
 
     def NUMERIC_SORT(self, (k, v)):
-        return int(k), v
+        return k, v

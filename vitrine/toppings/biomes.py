@@ -8,7 +8,7 @@ from .topping import Topping
 
 
 class BiomesTopping(Topping):
-    KEY = "biomes"
+    KEY = "biomes.biome"
     NAME = "Biomes"
     ITEMS = (("id", "ID"),
              ("color", "Color"),
@@ -31,6 +31,6 @@ class BiomesTopping(Topping):
                 entry["name"], color), entry["name"]
 
     def SORTING(self, (k, v)):
-        if "id" in v:
-            return v["id"], v
+        # if "id" in v:
+        #    return v["id"], v
         return k, v
