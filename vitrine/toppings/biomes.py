@@ -11,11 +11,13 @@ class BiomesTopping(Topping):
     KEY = "biomes.biome"
     NAME = "Biomes"
     ITEMS = (("id", "ID"),
+             ("text_id", "Text ID"),
              ("color", "Color"),
              ("temperature", "Temperature"),
              ("rainfall", "Rainfall"),
              ("minh", "Min height"),
-             ("maxh", "Max height"))
+             ("maxh", "Max height"),
+             ("mutated_from", "Mutated from"))
     ESCAPE_TITLE = False
     PRIORITY = 0
 
