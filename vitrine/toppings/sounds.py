@@ -11,19 +11,40 @@ class SoundsTopping(Topping):
     KEY = "sounds"
     NAME = "Sounds"
     PRIORITY = 3.5
-    RESOURCE_URL = "http://s3.amazonaws.com/MinecraftResources/"
+    RESOURCES_SITE = "http://resources.download.minecraft.net/%s/%s"
 
     def parse_entry(self, entry, key=None):
         return entry["name"]
 
     def _get_dl(self, entry):
         aggregate = "<dl>"
-        for version in entry['versions']:
-            aggregate += "<dt>%s</dt>" % version
-            aggregate += "<dd>%s</dd>" % "<br />".join(
-                "<a href=\"{0}{1}\">{1}</a>".format(self.RESOURCE_URL,
-                                                    sound['path'])
-                for sound in entry['versions'][version]
+        aggregate += "<dt>Name</dt>"
+        aggregate += "<dd>%s</dd>" % entry["name"]
+        aggregate += "<dt>ID</dt>"
+        aggregate += "<dd>%s</dd>" % entry["id"]
+        if "field" in entry:
+            aggregate += "<dt>Field</dt>"
+            aggregate += "<dd>%s</dd>" % entry["field"]
+        if "subtitle_key" in entry:
+            aggregate += "<dt>Subtitle key</dt>"
+            aggregate += "<dd>%s</dd>" % entry["subtitle_key"]
+        if "subtitle" in entry:
+            aggregate += "<dt>Subtitle</dt>"
+            aggregate += "<dd>%s</dd>" % entry["subtitle"]
+        if "sounds" in entry:
+            aggregate += "<dt>Sounds (%s)</dt>" % len(entry["sounds"])
+            aggregate += "<dd>%s</dd>" % (
+                "<br/>".join([self.make_sound_link(sound) for sound in entry["sounds"]])
             )
         aggregate += "</dl>"
         return aggregate
+
+    def make_sound_link(self, sound):
+        """Makes a link for the given sound variant"""
+        sound_name = sound["name"]
+        if "hash" in sound:
+            sound_hash = sound["hash"]
+            link = self.RESOURCES_SITE % (sound_hash[0:2], sound_hash)
+            return "<a title=\"%s\" href=\"%s\">%s</a>" % (sound_hash, link, sound_name)
+        else:
+            return sound_name
