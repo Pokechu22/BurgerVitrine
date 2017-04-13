@@ -69,6 +69,9 @@ class RecipesTopping(Topping):
                 if i % 3 == 0:
                     aggregate += '</div><div class="craftrow">'
             aggregate += "</div>"
+            #aggregate += "(shapeless)"
+        if "id" in entry:
+            aggregate += entry["id"]
 
         entry["json"] = aggregate
         return result
