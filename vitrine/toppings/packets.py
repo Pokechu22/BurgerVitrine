@@ -52,7 +52,8 @@ class PacketsTopping(Topping):
              "itemstack": "writeItemStack",
              "chatcomponent": "writeChatComponent",
              "varint[]": "writeVarIntArray",
-             "long[]": "writeLongArray"
+             "long[]": "writeLongArray",
+             "identifier": "writeIdentifier"
         }
     PRIORITY = 7
 
