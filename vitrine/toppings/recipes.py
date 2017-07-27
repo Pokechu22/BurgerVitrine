@@ -28,11 +28,7 @@ class RecipesTopping(Topping):
     def _entry(self, title, content, escape=True):
         if escape:
             title = self.escape(title)
-        return ('<div class="entry">' +
-                '<div class="workbench"><div class="craftgrid">' +
-                '%s</div><div class="result">%s</div></div></div>') % (
-                    content, title
-                )
+        return ('<div class="entry">%s</div>' % content)
 
     def _split(self, left, right):
         return ('<div class="split"><div class="left">%s</div>' +
@@ -40,7 +36,19 @@ class RecipesTopping(Topping):
 
     def parse_entry(self, entry, key):
         result = self.craft_item(entry["makes"])
-        aggregate = ""
+        aggregate = "<dl>"
+        aggregate += "<dt>type</dt>"
+        aggregate += "<dd>%s</dd>" % entry["type"]
+        if "id" in entry:
+            aggregate += "<dt>id</dt>"
+            aggregate += "<dd>%s</dd>" % entry["id"]
+        if "group" in entry:
+            aggregate += "<dt>group</dt>"
+            aggregate += "<dd>%s</dd>" % entry["group"]
+        aggregate += "</dl>"
+        
+        aggregate += '<div class="workbench"><div class="craftgrid">'
+
         if entry["type"] == "shape":
             materials = {' ': '<div class="empty"></div>'}
             for key, item in entry["raw"]["subs"].iteritems():
@@ -69,9 +77,8 @@ class RecipesTopping(Topping):
                 if i % 3 == 0:
                     aggregate += '</div><div class="craftrow">'
             aggregate += "</div>"
-            #aggregate += "(shapeless)"
-        if "id" in entry:
-            aggregate += entry["id"]
+        aggregate += "</div>"
+        aggregate += '<div class="result">%s</div></div>' % result
 
         entry["json"] = aggregate
         return result
