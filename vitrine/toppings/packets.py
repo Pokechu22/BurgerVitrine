@@ -149,6 +149,14 @@ class PacketsTopping(Topping):
                 instr["value"]
             ), level)
             close = False
+        elif instr["operation"] == "interfacecall":
+            aggregate += self.indent(
+            "// interface call to %s.%s on %s: behavior may vary" % (
+                instr["target"],
+                instr["method"],
+                instr["field"]
+            ), level)
+            close = False
         else:
             aggregate += self.indent("// %s" % instr["operation"], level)
             close = False
