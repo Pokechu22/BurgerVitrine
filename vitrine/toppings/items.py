@@ -22,8 +22,8 @@ class ItemsTopping(ItemTitleTopping):
             entry["name"] = entry["display_name"]
         elif "name" not in entry:
             entry["name"] = "Unknown"
-        #if "icon" in entry:
-        if True:
+        if "icon" in entry:
+        #if True:
             #if isinstance(entry['icon'], basestring):
             icon = (-(entry['numeric_id'] % 1800 - 256) * 32, 0)
         #    else:
@@ -34,4 +34,4 @@ class ItemsTopping(ItemTitleTopping):
         return ('<div class="item" title="%s" ' +
                 'style="%s"></div>') % (
                     entry["name"], style
-                ), entry["numeric_id"]
+                ), entry["text_id"]

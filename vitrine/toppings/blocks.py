@@ -31,10 +31,7 @@ class BlocksTopping(ItemTitleTopping):
             entry["name"] = entry["display_name"]
         elif "name" not in entry:
             entry["name"] = "Unknown"
-        if False:
-            pass
-        #if "texture" in entry:
-        if True:
+        if "texture" in entry:
         #    if isinstance(entry['texture'], basestring):
             icon = (-entry['numeric_id'] * 32, 0)
         #    else:
@@ -48,4 +45,4 @@ class BlocksTopping(ItemTitleTopping):
             class_ = "craftitem"
             return '<div title="%s" class="%s">%s</div>' % (
                 entry["name"], class_, entry["text_id"] if "text_id" in entry else entry["numeric_id"]
-            ), entry["numeric_id"]
+            ), entry["text_id"]
