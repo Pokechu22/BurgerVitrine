@@ -46,3 +46,37 @@ class BlocksTopping(ItemTitleTopping):
             return '<div title="%s" class="%s">%s</div>' % (
                 entry["name"], class_, entry["text_id"] if "text_id" in entry else entry["numeric_id"]
             ), entry["text_id"]
+
+    def _get_dl(self, entry):
+        aggregate = "<dl>"
+        aggregate += "<dt>ID</dt>"
+        aggregate += "<dd>%s</dd>" % entry["text_id"]
+        if "numeric_id" in entry:
+            aggregate += "<dt>Numeric ID</dt>"
+            aggregate += "<dd>%s</dd>" % entry["numeric_id"]
+        if "name" in entry:
+            aggregate += "<dt>Name</dt>"
+            aggregate += "<dd>%s</dd>" % entry["name"]
+        if "hardness" in entry:
+            aggregate += "<dt>Hardness</dt>"
+            aggregate += "<dd>%s</dd>" % entry["hardness"]
+
+        if "states" in entry:
+            if "num_states" in entry:
+                aggregate += "<dt>State IDs</dt>"
+                aggregate += "<dd>%s</dd>" % entry["num_states"]
+            aggregate += "<dt>States</dt>"
+            aggregate += "<dd>%s total<dl>" % len(entry["states"])
+            for state in entry["states"]:
+                aggregate += "<dt>%s</dt>" % state["name"]
+                aggregate += "<dd>"
+                if state["type"] in ("direction", "enum"):
+                    aggregate += "<br/>".join(state["values"])
+                elif state["type"] == "int":
+                    aggregate += "[%s...%s]" % (state["min"], state["max"])
+                elif state["type"] == "bool":
+                    aggregate += "boolean"
+                aggregate += "</dd>"
+            aggregate += "</dl></dd>"
+        aggregate += "</dl>"
+        return aggregate
