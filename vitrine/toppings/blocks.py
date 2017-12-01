@@ -62,9 +62,8 @@ class BlocksTopping(ItemTitleTopping):
             aggregate += "<dd>%s</dd>" % entry["hardness"]
 
         if "states" in entry:
-            if "num_states" in entry:
-                aggregate += "<dt>State IDs</dt>"
-                aggregate += "<dd>%s</dd>" % entry["num_states"]
+            aggregate += "<dt>State IDs</dt>"
+            aggregate += "<dd>%s from %s to %s</dd>" % (entry["num_states"], entry["min_state_id"], entry["max_state_id"])
             aggregate += "<dt>States</dt>"
             aggregate += "<dd>%s total<dl>" % len(entry["states"])
             for state in entry["states"]:
