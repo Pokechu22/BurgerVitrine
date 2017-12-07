@@ -13,15 +13,18 @@ class TagsTopping(Topping):
     PRIORITY = 8.5
 
     def parse_entry(self, entry, key=None):
-        return key
+        return entry["name"]
 
     def _get_dl(self, entry):
         aggregate = "<dl>"
-        for k, v in entry.iteritems():
-            aggregate += "<dt>%s</dt>" % k
-            aggregate += "<dd>%s</dd>" % (
-                "<br/>".join([self.make_internal_link(v["type"], val) for val in v["values"]])
-            )
+        aggregate += "<dt>Type</dt>"
+        aggregate += "<dd>%s</dd>" % entry["type"]
+        aggregate += "<dt>Name</dt>"
+        aggregate += "<dd>%s</dd>" % entry["name"]
+        aggregate += "<dt>Values</dt>"
+        aggregate += "<dd>%s</dd>" % (
+            "<br/>".join([self.make_internal_link(entry["type"], val) for val in entry["values"]])
+        )
         aggregate += "</dl>"
         return aggregate
 
