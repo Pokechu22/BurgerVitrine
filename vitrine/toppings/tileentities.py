@@ -9,7 +9,7 @@ from .topping import Topping
 
 class TileEntities(Topping):
     KEY = "tileentity.tileentities"
-    NAME = "Tile entities"
+    NAME = "Block entities"
     PRIORITY = 7
 
     def parse_entry(self, entry, key=None):
