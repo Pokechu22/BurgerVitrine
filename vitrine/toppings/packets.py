@@ -90,9 +90,12 @@ class PacketsTopping(Topping):
         close = False
         case = False
         aggregate = ""
-        for instr in instructions:
-            html, close, case = self.instruction(instr, close, case, level)
-            aggregate += html
+        if instructions:
+            for instr in instructions:
+                html, close, case = self.instruction(instr, close, case, level)
+                aggregate += html
+        else:
+            aggregate += self.indent("// empty", level);
         if close:
             aggregate += self.indent("}", level)
         return aggregate
