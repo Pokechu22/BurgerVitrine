@@ -39,8 +39,7 @@ class PacketsTopping(Topping):
              "float": "writeFloat",
              "long": "writeLong",
              "double": "writeDouble",
-             "string16": "writeString",
-             "string8": "writeStringUTF",
+             "string": "writeString",
              "byte[]": "writeBytes",
              "varint": "writeVarInt",
              "varlong": "writeVarLong",
@@ -66,14 +65,13 @@ class PacketsTopping(Topping):
             entry["code"] = self.code(entry["instructions"])
         else:
             entry["code"] = ""
-        
-        #title = "0x%02x" % entry["id"]
+
         title = key
         if "name" in entry:
             title = "%s (%s)" % (entry["name"], title)
         elif self.wiki_links:
             title = "%s (%s)" % (self.wiki.name(entry["id"], "Unknown"), title)
-            
+
         return (title, "0x%02x" % entry["id"])
 
     def links(self, entry, key=None):
@@ -149,12 +147,22 @@ class PacketsTopping(Topping):
                 instr["value"]
             ), level)
             close = False
+        elif instr["operation"] == "arraystore":
+            aggregate += self.indent("%s[%s] = %s;" % (
+                instr["var"],
+                instr["index"],
+                instr["value"]
+            ), level)
+            close = False
         elif instr["operation"] == "interfacecall":
             aggregate += self.indent(
-            "// interface call to %s.%s on %s: behavior may vary" % (
+            "%s.%s(%s); // %s call to %s.%s: behavior may vary" % (
+                instr["field"],
+                instr["name"],
+                instr["args"],
+                instr["type"],
                 instr["target"],
-                instr["method"],
-                instr["field"]
+                instr["method"]
             ), level)
             close = False
         else:
