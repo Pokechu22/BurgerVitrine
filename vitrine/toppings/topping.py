@@ -27,7 +27,7 @@ class Topping(object):
         self.wiki_links = wiki is not None
 
     def __str__(self):
-        return'<a href="#{1}"><h2 id="{1}">{0}</h2></a>{2}'.format(
+        return'<a href="#{1}"><h2 id="{1}">{0}</h2></a>{2}\n'.format(
             self.NAME, self.anchor(), self._parse_data()
         )
 
@@ -61,7 +61,7 @@ class Topping(object):
 
     def _get_entry_html(self, entry, key=None):
         if entry is None:
-            return '<div class="no entry"></div>'
+            return '<div class="no entry"></div>\n'
         else:
             anchor = title = self.parse_entry(entry, key)
             links = "".join(self._link(txt, url) for 
@@ -115,7 +115,7 @@ class Topping(object):
         if escape:
             title = self.escape(title)
         return ('<div class="entry"><a href="#{2}"><h3 id="{2}">{0}</h3></a>' +
-            '<div>{1}</div></div>').format(title, content, self.anchor(anchor))
+            '<div>{1}</div></div>\n').format(title, content, self.anchor(anchor))
 
     def _split(self, left, right):
         return ('<div class="split"><div class="left">%s</div>' +

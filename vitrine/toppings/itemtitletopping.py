@@ -12,5 +12,5 @@ class ItemTitleTopping(Topping):
         if escape:
             title = self.escape(title)
         return ('<div class="entry"><h3 id="{2}" class="item_title">' +
-            '<a href="#{2}">{0}</a></h3><div>{1}</div></div>'
+            '<a href="#{2}">{0}</a></h3><div>{1}</div></div>\n'
             ).format(title, content, self.anchor(anchor))

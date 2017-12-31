@@ -16,13 +16,14 @@ class RecipesTopping(Topping):
 
     def _get_entry_html(self, entry, key=None):
         if entry is None or len(entry) == 0:
-            return '<div class="no entry"></div>'
+            return '<div class="no entry"></div>\n'
         else:
             id = key
-            aggregate = '<a id="%s"></a>' % self.anchor(id)
+            aggregate = '<a id="%s"></a>\n' % self.anchor(id)
             for recipe in entry:
                 aggregate += self._entry(self.parse_entry(recipe, key),
                                          self._get_dl(recipe), False)
+                aggregate += '\n'
             return aggregate
 
     def _entry(self, title, content, escape=True):
