@@ -54,9 +54,13 @@ class Topping(object):
 
     def _parse_entry(self, entry, key=None):
         if self.diff:
-            return self._split(self._get_entry_html(entry[0], key),
-                              self._get_entry_html(entry[1], key))
+            self.side = False
+            old = self._get_entry_html(entry[0], key)
+            self.side = True
+            new = self._get_entry_html(entry[1], key)
+            return self._split(old, new)
         else:
+            self.side = None
             return self._get_entry_html(entry, key)
 
     def _get_entry_html(self, entry, key=None):

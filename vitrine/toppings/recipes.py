@@ -104,6 +104,9 @@ class RecipesTopping(Topping):
         else:
             return self.EMPTY
 
+        if self.side is not None:
+            material = material[0] if self.side == False else material[1]
+
         if "display_name" in material:
             title = material["display_name"]
         elif "name" in material:
