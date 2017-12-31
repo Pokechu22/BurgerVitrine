@@ -28,9 +28,12 @@ class BlocksTopping(ItemTitleTopping):
 
     def parse_entry(self, entry, key):
         if "display_name" in entry:
-            entry["name"] = entry["display_name"]
-        elif "name" not in entry:
-            entry["name"] = "Unknown"
+            title = entry["display_name"]
+        elif "name" in entry:
+            title = entry["name"]
+        else:
+            assert "text_id" in entry
+            title = entry["text_id"]
         if "texture" in entry:
         #    if isinstance(entry['texture'], basestring):
             icon = (-entry['numeric_id'] * 32, 0)
@@ -38,13 +41,13 @@ class BlocksTopping(ItemTitleTopping):
         #        icon = [-entry["texture"][axis] * 32 for axis in ("x", "y")]
             return ('<div title="%s" class="texture" ' +
                     'style="background-position:%spx %spx;"></div>') % (
-                        entry["name"], icon[0], icon[1]
+                        title, icon[0], icon[1]
                     ), entry["numeric_id"]
         else:
             #class_ = "craftitem large" if entry["id"] < 100 else "craftitem"
             class_ = "craftitem"
             return '<div title="%s" class="%s">%s</div>' % (
-                entry["name"], class_, entry["text_id"] if "text_id" in entry else entry["numeric_id"]
+                title, class_, entry["text_id"] if "text_id" in entry else entry["numeric_id"]
             ), entry["text_id"]
 
     def _get_dl(self, entry):

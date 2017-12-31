@@ -19,9 +19,12 @@ class ItemsTopping(ItemTitleTopping):
 
     def parse_entry(self, entry, key):
         if "display_name" in entry:
-            entry["name"] = entry["display_name"]
-        elif "name" not in entry:
-            entry["name"] = "Unknown"
+            title = entry["display_name"]
+        elif "name" in entry:
+            title = entry["name"]
+        else:
+            assert "text_id" in entry
+            title = entry["text_id"]
         if "icon" in entry:
         #if True:
             #if isinstance(entry['icon'], basestring):
@@ -33,5 +36,5 @@ class ItemsTopping(ItemTitleTopping):
             style = 'background-image:none;'
         return ('<div class="item" title="%s" ' +
                 'style="%s"></div>') % (
-                    entry["name"], style
+                    title, style
                 ), entry["text_id"]
