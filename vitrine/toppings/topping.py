@@ -19,8 +19,9 @@ class Topping(object):
 
     NO_ENTRIES = '<span class="info">No entries</span>'
 
-    def __init__(self, data, diff, wiki):
+    def __init__(self, data, all_data, diff, wiki):
         self.data = data
+        self.all_data = all_data
         self.diff = diff
         self.wiki = wiki
         self.wiki_links = wiki is not None

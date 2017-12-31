@@ -83,11 +83,26 @@ class RecipesTopping(Topping):
         entry["json"] = aggregate
         return result
 
+    EMPTY = '<div class="empty"></div>'
     def craft_item(self, item):
-        if item is None or "data" not in item:
-            return '<div class="empty"></div>'
+        if item is None:
+            return self.EMPTY
 
-        material = item["data"]
+        if item["type"] == "item":
+            if "items" not in self.all_data:
+                return self.EMPTY
+            if item["name"] not in self.all_data["items"]["item"]:
+                return self.EMPTY
+            material = self.all_data["items"]["item"][item["name"]]
+        elif item["type"] == "block":
+            if "blocks" not in self.all_data:
+                return self.EMPTY
+            if item["name"] not in self.all_data["blocks"]["block"]:
+                return self.EMPTY
+            material = self.all_data["blocks"]["block"][item["name"]]
+        else:
+            return self.EMPTY
+
         if "display_name" in material:
             title = material["display_name"]
         elif "name" in material:
@@ -97,12 +112,12 @@ class RecipesTopping(Topping):
         else:
             title = "Unknown"
 
-        if "numeric_id" in material:
-            content = material["numeric_id"]
-            class_ = "craftitem large" if content < 100 else "craftitem"
-        elif "text_id" in material:
+        if "text_id" in material:
             content = material["text_id"]
             class_ = "craftitem"
+        elif "numeric_id" in material:
+            content = material["numeric_id"]
+            class_ = "craftitem large" if content < 100 else "craftitem"
         else:
             content = material
             class_ = "craftitem"

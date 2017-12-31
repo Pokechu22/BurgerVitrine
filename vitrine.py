@@ -122,7 +122,7 @@ def generate_html():
         if skip:
             continue
 
-        aggregate += str(topping(obj, diff, wiki))
+        aggregate += str(topping(obj, data, diff, wiki))
 
     if not only_body:
         aggregate = embed(aggregate)
