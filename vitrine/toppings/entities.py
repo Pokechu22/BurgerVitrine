@@ -15,11 +15,19 @@ class EntitiessTopping(Topping):
         ("name", "Name"),
         ("height", "Height"),
         ("width", "Width"),
-        ("texture", "Texture")
+        ("texture", "Texture"),
+        ("egg_secondary", "Egg foreground"),
+        ("egg_primary", "Egg background")
     )
+    ESCAPE_TITLE = False
     PRIORITY = 7.2
 
     def parse_entry(self, entry, key=None):
-        if not "name" in entry:
-            return entry["id"]
-        return entry["name"]
+        name = entry["name"] if "name" in entry else entry["id"]
+        if "egg_primary" in entry:
+            entry["egg_primary"] = "#%06x" % entry["egg_primary"]
+            entry["egg_secondary"] = "#%06x" % entry["egg_secondary"]
+            return '%s<div class="color" style="background:%s;"></div><div class="color" style="background:%s;"></div>' % (
+                name, entry["egg_primary"], entry["egg_secondary"])
+        else:
+            return name
