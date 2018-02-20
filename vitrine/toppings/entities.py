@@ -13,6 +13,7 @@ class EntitiessTopping(Topping):
     ITEMS = (
         ("id", "ID"),
         ("name", "Name"),
+        ("display_name", "Display name"),
         ("height", "Height"),
         ("width", "Width"),
         ("texture", "Texture"),
