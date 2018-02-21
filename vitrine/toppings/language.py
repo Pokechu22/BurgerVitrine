@@ -5,7 +5,7 @@
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
 from .topping import Topping
-
+import six
 
 class LanguageTopping(Topping):
     KEY = "language"
@@ -18,7 +18,7 @@ class LanguageTopping(Topping):
         return key
 
     def filter_keys(self, entry):
-        for key, value in entry.iteritems():
+        for key, value in six.iteritems(entry):
             if value == "":
                 continue
             if value is None:
@@ -42,7 +42,7 @@ class LanguageTopping(Topping):
         if isinstance(entry, dict):
             left = {}
             right = {}
-            for key, values in entry.iteritems():
+            for key, values in six.iteritems(entry):
                 if values[0] in ("", None) and values[1] in ("", None):
                     continue
                 elif values[0] != values[1]:

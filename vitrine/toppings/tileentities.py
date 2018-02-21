@@ -27,5 +27,5 @@ class TileEntities(Topping):
         aggregate += "</dl>"
         return aggregate
 
-    def SORTING(self, (k, v)):
-        return k, v
+    def SORTING(self, k_v):
+        return k_v

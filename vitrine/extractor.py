@@ -9,6 +9,7 @@ from StringIO import StringIO
 from solum import JarFile
 
 import os
+import six
 
 try:
     from PIL import Image
@@ -25,13 +26,13 @@ PATHS = {"terrain": "terrain.png",
 
 def extract(jar, file, output, data):
     if Image is None:
-        print "Extracting textures requires PIL"
+        print("Extracting textures requires PIL")
         return
 
     try:
         jar = JarFile(jar)
     except:
-        print "Opening jar file failed"
+        print("Opening jar file failed")
         return
     if not PATHS[file] in jar.zp.namelist():
         return extract_indivdual(jar, file, output, data)
@@ -46,7 +47,7 @@ def extract(jar, file, output, data):
 
 def extract_indivdual(jar, file, output, data):
     if not data:
-        print "Error: Vitrine expects Burger output via stdin."
+        print("Error: Vitrine expects Burger output via stdin.")
         return False
 
     if file == "items":
@@ -57,7 +58,7 @@ def extract_indivdual(jar, file, output, data):
 
 def extract_indivdual_items(jar, output, data):
     items = {}
-    for item in data[0]['items']['item'].itervalues():
+    for item in six.itervalues(data[0]['items']['item']):
         items[item['numeric_id']] = item['text_id']
 
     img = combine_textures(jar, items, "assets/minecraft/textures/items")
@@ -68,7 +69,7 @@ def extract_indivdual_items(jar, output, data):
 
 def extract_indivdual_blocks(jar, output, data):
     blocks = {}
-    for block in data[0]['blocks']['block'].itervalues():
+    for block in six.itervalues(data[0]['blocks']['block']):
         blocks[block['numeric_id']] = block['text_id']
 
     img = combine_textures(jar, blocks, "assets/minecraft/textures/blocks")
@@ -78,8 +79,8 @@ def extract_indivdual_blocks(jar, output, data):
 
 
 def combine_textures(jar, textures, location):
-    image = Image.new("RGBA", ((max(textures.iterkeys()) + 1) * 16, 16))
-    for id_, texture in textures.iteritems():
+    image = Image.new("RGBA", ((max(six.iterkeys(textures)) + 1) * 16, 16))
+    for id_, texture in six.iteritems(textures):
         path = "%s/%s.png" % (location, texture)
         if path not in jar.zp.namelist():
             start = "%s/%s_" % (location, texture)
@@ -98,12 +99,12 @@ def grab_block_sprites(jar, data, resources):
     try:
         jar = JarFile(jar)
     except:
-        print "Opening jar file failed"
+        print("Opening jar file failed")
         return
 
     if not os.path.isdir(resources + "blocks"):
         os.makedirs(resources + "blocks")
-    for block in data['blocks']['block'].itervalues():
+    for block in six.itervalues(data['blocks']['block']):
         if "text_id" in block:
             path = "assets/minecraft/textures/blocks/%s.png" % block["text_id"]
             out_path = resources + "blocks/%s.png" % block["text_id"]
@@ -115,7 +116,7 @@ def grab_block_sprites(jar, data, resources):
                 block['has_image'] = True
     if not os.path.isdir(resources + "items"):
         os.makedirs(resources + "items")
-    for item in data['items']['item'].itervalues():
+    for item in six.itervalues(data['items']['item']):
         if "text_id" in block:
             path = "assets/minecraft/textures/items/%s.png" % item["text_id"]
             out_path = resources + "items/%s.png" % item["text_id"]

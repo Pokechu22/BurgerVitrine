@@ -11,19 +11,19 @@ import json
 
 
 def usage():
-    print "Usage:"
-    print "  vitrine.py [-b] [-w] [-r file] [-o file]"
-    print "  vitrine.py -i | -t file [-o file]"
-    print
-    print "Options:"
-    print "  -b, --body: Don't generate a complete HTML document"
-    print "  -w, --wiki: Add links to the MinecraftCoalition wiki and display packet names"
-    print "  -r, --resources file: Path to resources folder"
-    print "  -o, --output file: Output result into a file instead of",
-    print "standard output"
-    print "  -i, --items file: Extract items.png from jar file"
-    print "  -t, --terrain file: Extract terrain.png from jar file"
-    print "  -h, --help: Show this help"
+    print("Usage:")
+    print("  vitrine.py [-b] [-w] [-r file] [-o file]")
+    print("  vitrine.py -i | -t file [-o file]")
+    print()
+    print("Options:")
+    print("  -b, --body: Don't generate a complete HTML document")
+    print("  -w, --wiki: Add links to the MinecraftCoalition wiki and display packet names")
+    print("  -r, --resources file: Path to resources folder")
+    print("  -o, --output file: Output result into a file instead of",)
+    print("standard output")
+    print("  -i, --items file: Extract items.png from jar file")
+    print("  -t, --terrain file: Extract terrain.png from jar file")
+    print("  -h, --help: Show this help")
 
 
 def import_toppings():
@@ -80,14 +80,14 @@ def generate_html():
 
     # Load JSON objects from stdin
     if sys.stdin.isatty():
-        print "Error: Vitrine expects Burger or Hamburglar output via stdin.\n"
+        print("Error: Vitrine expects Burger or Hamburglar output via stdin.\n")
         usage()
         sys.exit(3)
 
     try:
         data = json.load(sys.stdin)
-    except ValueError, err:
-        print "Error: Invalid input (" + str(err) + ")\n"
+    except ValueError as err:
+        print("Error: Invalid input (" + str(err) + ")\n")
         usage()
         sys.exit(5)
 
@@ -135,13 +135,13 @@ def generate_html():
 
 def extract():
     from vitrine import extractor
-    print "Extracting"
+    print("Extracting")
     data = None
     if not sys.stdin.isatty():
         try:
             data = json.load(sys.stdin)
-        except ValueError, err:
-            print "Error: Invalid input (" + str(err) + ")\n"
+        except ValueError as err:
+            print("Error: Invalid input (" + str(err) + ")\n")
     if not extractor.extract(jar, mode, output, data):
         sys.exit(1)
 
@@ -160,8 +160,8 @@ if __name__ == '__main__':
                 "help"
             ]
         )
-    except getopt.GetoptError, err:
-        print str(err)
+    except getopt.GetoptError as err:
+        print(str(err))
         sys.exit(1)
 
     # Default options

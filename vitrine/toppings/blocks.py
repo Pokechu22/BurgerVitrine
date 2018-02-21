@@ -17,7 +17,8 @@ class BlocksTopping(ItemTitleTopping):
     ESCAPE_TITLE = False
     PRIORITY = 10
 
-    def SORTING(self, (k, v)):
+    def SORTING(self, k_v):
+        k, v = k_v
         if self.diff:
             if v[0] is not None:
                 return v[0]["text_id"], k

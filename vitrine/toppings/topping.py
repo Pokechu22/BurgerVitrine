@@ -6,7 +6,7 @@
 
 import json
 from cgi import escape
-
+import six
 
 class Topping(object):
     KEY = None
@@ -38,7 +38,7 @@ class Topping(object):
             if len(self.data) == 0:
                 aggregate += self.NO_ENTRIES
             else:
-                for key, entry in sorted(self.data.iteritems(),
+                for key, entry in sorted(six.iteritems(self.data),
                                          key=self.SORTING):
                     aggregate += self._parse_entry(entry, key)
         elif isinstance(self.data, list):
@@ -135,5 +135,5 @@ class Topping(object):
         else:
             return anchor + ":" + self._anchor_escape(child)
 
-    def NUMERIC_SORT(self, (k, v)):
-        return k, v
+    def NUMERIC_SORT(self, k_v):
+        return k_v
