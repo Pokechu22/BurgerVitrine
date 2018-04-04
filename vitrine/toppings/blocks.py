@@ -58,9 +58,9 @@ class BlocksTopping(ItemTitleTopping):
         if "numeric_id" in entry:
             aggregate += "<dt>Numeric ID</dt>"
             aggregate += "<dd>%s</dd>" % entry["numeric_id"]
-        if "name" in entry:
+        if "display_name" in entry:
             aggregate += "<dt>Name</dt>"
-            aggregate += "<dd>%s</dd>" % entry["name"]
+            aggregate += "<dd>%s</dd>" % entry["display_name"]
         if "hardness" in entry:
             aggregate += "<dt>Hardness</dt>"
             aggregate += "<dd>%s</dd>" % entry["hardness"]
