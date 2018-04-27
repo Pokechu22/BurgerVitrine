@@ -15,15 +15,15 @@ class BiomesTopping(Topping):
              ("color", "Color"),
              ("temperature", "Temperature"),
              ("rainfall", "Rainfall"),
-             ("minh", "Min height"),
-             ("maxh", "Max height"),
+             ("depth", "Depth"),
+             ("scale", "Scale"),
              ("mutated_from", "Mutated from"))
     ESCAPE_TITLE = False
     PRIORITY = 0
 
     def parse_entry(self, entry, key):
         if "height" in entry:
-            entry["minh"], entry["maxh"] = entry["height"]
+            entry["depth"], entry["scale"] = entry["height"]
         if "color" in entry:
             entry["color"] = "#%06x" % entry["color"]
             color = entry["color"]
