@@ -72,7 +72,7 @@ class PacketsTopping(Topping):
         elif self.wiki_links:
             title = "%s (%s)" % (self.wiki.name(entry["id"], "Unknown"), title)
 
-        return (title, "0x%02x" % entry["id"])
+        return (title, key)
 
     def links(self, entry, key=None):
         if self.wiki_links and self.wiki.url(entry["id"]) is not None:
