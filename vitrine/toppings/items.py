@@ -12,7 +12,8 @@ class ItemsTopping(ItemTitleTopping):
     NAME = "Items"
     ITEMS = (("text_id", "ID"),
              ("numeric_id", "Numeric ID"),
-             ("display_name", "Name"))
+             ("display_name", "Name"),
+             ("max_stack_size", "Max Stack Size"))
     SORTING = ItemTitleTopping.NUMERIC_SORT
     ESCAPE_TITLE = False
     PRIORITY = 9
