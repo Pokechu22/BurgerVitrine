@@ -5,6 +5,7 @@
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
 from .topping import Topping
+import sys
 
 try:
     from pygments import highlight
@@ -14,6 +15,10 @@ try:
     FORMATTER = HtmlFormatter(classprefix="hl_", nowrap=True)
     LEXER = JavaLexer()
 except:
+    import traceback
+    import sys
+    print("Failed to load syntax highlighter; is pygments installed?  Code will not be highlighted.", file=sys.stderr)
+    traceback.print_exc()
     SYNTAX_HIGHLIGHT = False
 
 
