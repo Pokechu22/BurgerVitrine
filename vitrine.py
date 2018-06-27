@@ -13,7 +13,6 @@ import json
 def usage():
     print("Usage:")
     print("  vitrine.py [-b] [-w] [-r file] [-o file]")
-    print("  vitrine.py -i | -t file [-o file]")
     print()
     print("Options:")
     print("  -b, --body: Don't generate a complete HTML document")
@@ -21,8 +20,6 @@ def usage():
     print("  -r, --resources file: Path to resources folder")
     print("  -o, --output file: Output result into a file instead of",)
     print("standard output")
-    print("  -i, --items file: Extract items.png from jar file")
-    print("  -t, --terrain file: Extract terrain.png from jar file")
     print("  -h, --help: Show this help")
 
 
@@ -95,9 +92,6 @@ def generate_html():
     if not diff:
         data = data[0]
 
-    if sprites:
-        from vitrine import extractor
-        extractor.grab_block_sprites(jar, data, resources)
     # Load packet names
     if wiki_links:
         from vitrine.wiki import CoalitionWiki
@@ -133,30 +127,15 @@ def generate_html():
     file.close()
 
 
-def extract():
-    from vitrine import extractor
-    print("Extracting")
-    data = None
-    if not sys.stdin.isatty():
-        try:
-            data = json.load(sys.stdin)
-        except ValueError as err:
-            print("Error: Invalid input (" + str(err) + ")\n")
-    if not extractor.extract(jar, mode, output, data):
-        sys.exit(1)
-
 if __name__ == '__main__':
     try:
         opts, args = getopt.gnu_getopt(
             sys.argv[1:],
-            "o:bwi:t:r:s:h",
+            "o:bwr:h",
             [
                 "output=",
                 "body",
-                "items=",
-                "terrain=",
                 "resources=",
-                "sprites=",
                 "help"
             ]
         )
@@ -167,9 +146,6 @@ if __name__ == '__main__':
     # Default options
     output = sys.stdout
     only_body = False
-    mode = "html"
-    jar = None
-    sprites = False
     wiki_links = False
     resources = "resources/"
 
@@ -184,20 +160,8 @@ if __name__ == '__main__':
             resources = a
             if resources[-1] != "/":
                 resources += "/"
-        elif o in ("-i", "--items"):
-            mode = "items"
-            jar = a
-        elif o in ("-t", "--terrain"):
-            mode = "terrain"
-            jar = a
-        elif o in ("-s", "--sprites"):
-            sprites = True
-            jar = a
         elif o in ("-h", "--help"):
             usage()
             sys.exit(0)
 
-    if mode == "html":
-        generate_html()
-    else:
-        extract()
+    generate_html()
