@@ -18,8 +18,7 @@ def usage():
     print("  -b, --body: Don't generate a complete HTML document")
     print("  -w, --wiki: Add links to the MinecraftCoalition wiki and display packet names")
     print("  -r, --resources file: Path to resources folder")
-    print("  -o, --output file: Output result into a file instead of",)
-    print("standard output")
+    print("  -o, --output file: Output result into a file instead of standard output")
     print("  -h, --help: Show this help")
 
 
@@ -55,7 +54,7 @@ def import_toppings():
     return toppings
 
 
-def embed(html):
+def embed(resources, html):
     return """<!doctype html>
               <html>
                 <head>
@@ -72,35 +71,13 @@ def embed(html):
               </html>""" % (resources, resources, resources, html)
 
 
-def generate_html():
-    toppings = import_toppings()
-
-    # Load JSON objects from stdin
-    if sys.stdin.isatty():
-        print("Error: Vitrine expects Burger or Hamburglar output via stdin.\n")
-        usage()
-        sys.exit(3)
-
-    try:
-        data = json.load(sys.stdin)
-    except ValueError as err:
-        print("Error: Invalid input (" + str(err) + ")\n")
-        usage()
-        sys.exit(5)
-
+def generate_html(toppings, data, wiki):
     diff = not isinstance(data, list)
     if not diff:
         data = data[0]
 
-    # Load packet names
-    if wiki_links:
-        from vitrine.wiki import CoalitionWiki
-        wiki = CoalitionWiki()
-    else:
-        wiki = None
-        
     # Generate HTML
-    aggregate = ""
+    aggregate = []
 
     for topping in sorted(toppings, key=lambda x: -x.PRIORITY):
         if topping.KEY == None:
@@ -116,18 +93,18 @@ def generate_html():
         if skip:
             continue
 
-        aggregate += str(topping(obj, data, diff, wiki))
+        try:
+            aggregate.append(str(topping(obj, data, diff, wiki)))
+        except:
+            import traceback
+            from html import escape
+            aggregate.append('<h2>%s</h2><div class="entry"><h3>Error</h3><pre>%s</pre></div>' % (topping.NAME, escape(traceback.format_exc())))
+            print("Failed to run", topping, file=sys.stderr)
+            traceback.print_exc()
 
-    if not only_body:
-        aggregate = embed(aggregate)
+    return "".join(aggregate)
 
-    # Output results
-    file = open(output, "w")
-    file.write(aggregate)
-    file.close()
-
-
-if __name__ == '__main__':
+def main():
     try:
         opts, args = getopt.gnu_getopt(
             sys.argv[1:],
@@ -140,7 +117,7 @@ if __name__ == '__main__':
             ]
         )
     except getopt.GetoptError as err:
-        print(str(err))
+        print(str(err), file=sys.stderr)
         sys.exit(1)
 
     # Default options
@@ -164,4 +141,39 @@ if __name__ == '__main__':
             usage()
             sys.exit(0)
 
-    generate_html()
+    toppings = import_toppings()
+
+    # Load JSON objects from stdin
+    if sys.stdin.isatty():
+        print("Error: Vitrine expects Burger or Hamburglar output via stdin.\n", file=sys.stderr)
+        usage()
+        sys.exit(3)
+
+    try:
+        data = json.load(sys.stdin)
+    except ValueError as err:
+        print("Error: Invalid input (" + str(err) + ")\n", file=sys.stderr)
+        usage()
+        sys.exit(5)
+
+    # Load packet names
+    if wiki_links:
+        from vitrine.wiki import CoalitionWiki
+        wiki = CoalitionWiki()
+    else:
+        wiki = None
+
+    # Generate HTML
+    html = generate_html(toppings, data, wiki)
+
+    # Create full page, if requested
+    if not only_body:
+        html = embed(resources, html)
+
+    # Output results
+    file = open(output, "w")
+    file.write(html)
+    file.close()
+
+if __name__ == '__main__':
+    main()
