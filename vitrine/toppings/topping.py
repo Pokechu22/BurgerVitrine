@@ -5,8 +5,7 @@
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
 import json
-from cgi import escape
-import six
+from html import escape
 
 class Topping(object):
     KEY = None
@@ -38,7 +37,7 @@ class Topping(object):
             if len(self.data) == 0:
                 aggregate += self.NO_ENTRIES
             else:
-                for key, entry in sorted(six.iteritems(self.data),
+                for key, entry in sorted(self.data.items(),
                                          key=self.SORTING):
                     aggregate += self._parse_entry(entry, key)
         elif isinstance(self.data, list):

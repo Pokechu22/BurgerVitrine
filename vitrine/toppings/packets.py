@@ -16,7 +16,6 @@ try:
     LEXER = JavaLexer()
 except:
     import traceback
-    import sys
     print("Failed to load syntax highlighter; is pygments installed?  Code will not be highlighted.", file=sys.stderr)
     traceback.print_exc()
     SYNTAX_HIGHLIGHT = False

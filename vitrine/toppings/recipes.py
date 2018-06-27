@@ -5,7 +5,6 @@
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
 from .topping import Topping
-import six
 
 class RecipesTopping(Topping):
     KEY = "recipes"
@@ -52,7 +51,7 @@ class RecipesTopping(Topping):
 
         if entry["type"] == "shape":
             materials = {' ': '<div class="empty"></div>'}
-            for key, item in six.iteritems(entry["raw"]["subs"]):
+            for key, item in entry["raw"]["subs"].items():
                 materials[key] = self.craft_item(item)
             rows = entry["raw"]["rows"]
             for i in range(3 - len(rows)):
