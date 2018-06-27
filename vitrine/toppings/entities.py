@@ -7,7 +7,7 @@
 from .topping import Topping
 
 
-class EntitiessTopping(Topping):
+class EntitiesTopping(Topping):
     KEY = "entities.entity"
     NAME = "Entities"
     ITEMS = (

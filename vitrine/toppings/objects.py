@@ -6,8 +6,7 @@
 
 from .topping import Topping
 
-
-class EntitiessTopping(Topping):
+class ObjectsTopping(Topping):
     KEY = "entities.object"
     NAME = "Objects"
     ITEMS = (
