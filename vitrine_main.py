@@ -5,6 +5,7 @@
 # http://sam.zoy.org/wtfpl/COPYING for more details.
 
 import sys
+import traceback
 
 def usage():
     print("Usage:")
@@ -69,7 +70,7 @@ def embed(resources, html):
               </html>""" % (resources, resources, resources, html)
 
 
-def generate_html(toppings, data, wiki):
+def generate_html(toppings, data, wiki=None, highlight=None):
     diff = not isinstance(data, list)
     if not diff:
         data = data[0]
@@ -92,9 +93,8 @@ def generate_html(toppings, data, wiki):
             continue
 
         try:
-            aggregate.append(str(topping(obj, data, diff, wiki)))
+            aggregate.append(str(topping(obj, data, diff, wiki, highlight)))
         except:
-            import traceback
             from html import escape
             aggregate.append('<h2>%s</h2><div class="entry"><h3>Error</h3><pre>%s</pre></div>' % (topping.NAME, escape(traceback.format_exc())))
             print("Failed to run", topping, file=sys.stderr)
@@ -143,6 +143,18 @@ def main():
             sys.exit(0)
 
     toppings = import_toppings()
+    highlight = None
+
+    try:
+        import pygments
+        from pygments.lexers import JavaLexer
+        from pygments.formatters import HtmlFormatter
+        formatter = HtmlFormatter(classprefix="hl_", nowrap=True)
+        lexer = JavaLexer()
+        highlight = lambda code: pygments.highlight(code, lexer, formatter)
+    except:
+        print("Failed to load syntax highlighter; is pygments installed?  Code will not be highlighted.", file=sys.stderr)
+        traceback.print_exc()
 
     # Load JSON objects from stdin
     if sys.stdin.isatty():
@@ -165,7 +177,7 @@ def main():
         wiki = None
 
     # Generate HTML
-    html = generate_html(toppings, data, wiki)
+    html = generate_html(toppings, data, wiki, highlight)
 
     # Create full page, if requested
     if not only_body:

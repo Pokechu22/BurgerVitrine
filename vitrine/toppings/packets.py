@@ -7,20 +7,6 @@
 from .topping import Topping
 import sys
 
-try:
-    from pygments import highlight
-    from pygments.lexers import JavaLexer
-    from pygments.formatters import HtmlFormatter
-    SYNTAX_HIGHLIGHT = True
-    FORMATTER = HtmlFormatter(classprefix="hl_", nowrap=True)
-    LEXER = JavaLexer()
-except:
-    import traceback
-    print("Failed to load syntax highlighter; is pygments installed?  Code will not be highlighted.", file=sys.stderr)
-    traceback.print_exc()
-    SYNTAX_HIGHLIGHT = False
-
-
 class PacketsTopping(Topping):
     KEY = "packets.packet"
     NAME = "Packets"
@@ -84,10 +70,7 @@ class PacketsTopping(Topping):
 
     def code(self, instructions):
         code = self.instructions(instructions)
-        if SYNTAX_HIGHLIGHT:
-            code = highlight(code, LEXER, FORMATTER)
-        else:
-            code = self.escape(code)
+        code = self.highlight(code)
         return "<pre>%s</pre>" % code
 
     def instructions(self, instructions, level=0):

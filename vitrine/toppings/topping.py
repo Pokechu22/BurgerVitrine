@@ -18,12 +18,21 @@ class Topping(object):
 
     NO_ENTRIES = '<span class="info">No entries</span>'
 
-    def __init__(self, data, all_data, diff, wiki):
+    def __init__(self, data, all_data, diff, wiki=None, highlight=None):
+        """
+        data: data for this topping
+        all_data: the entire data set
+        diff: True if this is a diff
+        wiki: optional wiki to get packet names from
+        highlight: optional function that takes code and returns escaped HTML
+        """
+
         self.data = data
         self.all_data = all_data
         self.diff = diff
         self.wiki = wiki
         self.wiki_links = wiki is not None
+        self.highlight = highlight or self.escape
 
     def __str__(self):
         return'<a href="#{1}"><h2 id="{1}">{0}</h2></a>{2}\n'.format(
