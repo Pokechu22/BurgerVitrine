@@ -9,11 +9,12 @@ import traceback
 
 def usage():
     print("Usage:")
-    print("  vitrine.py [-b] [-w] [-r file] [-o file]")
+    print("  vitrine_main.py [-b] [-w] [-v] [-r file] [-o file]")
     print()
     print("Options:")
     print("  -b, --body: Don't generate a complete HTML document")
     print("  -w, --wiki: Add links to the MinecraftCoalition wiki and display packet names")
+    print("  -v, --verbose: Output progress information to standard error")
     print("  -r, --resources file: Path to resources folder")
     print("  -o, --output file: Output result into a file instead of standard output")
     print("  -h, --help: Show this help")
@@ -70,7 +71,17 @@ def embed(resources, html):
               </html>""" % (resources, resources, resources, html)
 
 
-def generate_html(toppings, data, wiki=None, highlight=None):
+def generate_html(toppings, data, wiki=None, highlight=None, progress_callback=None):
+    """
+    Generates HTML for a version.
+
+    toppings: a list of toppings to run
+    data: the data to generate (may be a single-item list, or a dict)
+    wiki: Wiki to use for packet names
+    highlight: A function taking code that returns HTML
+    progress_callback: An optional function to call when starting each
+    topping; takes one arg (the topping's name)
+    """
     diff = not isinstance(data, list)
     if not diff:
         data = data[0]
@@ -81,6 +92,8 @@ def generate_html(toppings, data, wiki=None, highlight=None):
     for topping in sorted(toppings, key=lambda x: -x.PRIORITY):
         if topping.KEY == None:
             continue
+        if progress_callback:
+            progress_callback(topping.NAME)
         keys = topping.KEY.split(".")
         obj = data
         skip = False
@@ -105,14 +118,17 @@ def generate_html(toppings, data, wiki=None, highlight=None):
 def main():
     import getopt
     import json
+    import functools
 
     try:
         opts, args = getopt.gnu_getopt(
             sys.argv[1:],
-            "o:bwr:h",
+            "o:bwvr:h",
             [
                 "output=",
                 "body",
+                "wiki",
+                "verbose",
                 "resources=",
                 "help"
             ]
@@ -125,6 +141,7 @@ def main():
     output = sys.stdout
     only_body = False
     wiki_links = False
+    progress_callback = None
     resources = "resources/"
 
     for o, a in opts:
@@ -134,6 +151,8 @@ def main():
             only_body = True
         elif o in ("-w", "--wiki"):
             wiki_links = True
+        elif o in ("-v", "--verbose"):
+            progress_callback = functools.partial(print, "Running topping:", file=sys.stderr)
         elif o in ("-r", "--resources"):
             resources = a
             if resources[-1] != "/":
@@ -177,7 +196,7 @@ def main():
         wiki = None
 
     # Generate HTML
-    html = generate_html(toppings, data, wiki, highlight)
+    html = generate_html(toppings, data, wiki, highlight, progress_callback)
 
     # Create full page, if requested
     if not only_body:
