@@ -54,7 +54,7 @@ class PacketsTopping(Topping):
         if "instructions" in entry:
             entry["code"] = self.code(entry["instructions"])
         else:
-            entry["code"] = ""
+            entry["code"] = "(no instruction data - did the packet fail to parse?)"
 
         title = key
         if "name" in entry:
