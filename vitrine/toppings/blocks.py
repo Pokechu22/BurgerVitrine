@@ -64,6 +64,12 @@ class BlocksTopping(ItemTitleTopping):
         if "hardness" in entry:
             aggregate += "<dt>Hardness</dt>"
             aggregate += "<dd>%s</dd>" % entry["hardness"]
+        if "resistance" in entry:
+            aggregate += "<dt>Resistance</dt>"
+            aggregate += "<dd>%s</dd>" % (entry["resistance"] * 5.0) # as is seen on the wiki, though no longer used in 1.13
+        if "light" in entry:
+            aggregate += "<dt>Light level</dt>"
+            aggregate += "<dd>%s</dd>" % entry["light"]
 
         if "states" in entry:
             aggregate += "<dt>State IDs</dt>"
