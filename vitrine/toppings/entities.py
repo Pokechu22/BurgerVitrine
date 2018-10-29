@@ -32,3 +32,27 @@ class EntitiesTopping(Topping):
                 name, entry["egg_primary"], entry["egg_secondary"])
         else:
             return name
+
+    def _get_dl(self, entry):
+        parent = Topping._get_dl(self, entry)
+        if "metadata" in entry:
+            aggregate = "<dt>Metadata</dt>"
+            for metadata in entry["metadata"]:
+                if metadata["class"] == entry["class"]:
+                    source = "Own metadata:"
+                elif "entity" in metadata:
+                    # Concrete parent
+                    source = 'Inhertits from <a href="#%s">%s</a>' % (self.anchor(metadata["entity"]), metadata["entity"])
+                else:
+                    # Abstract parent
+                    source = "Abstract parent:"
+                aggregate += "<dd>" + source
+                if "data" in metadata:
+                    aggregate += "<ol>"
+                    for metadata_entry in metadata["data"]:
+                        aggregate += '<li value="%d">%s</li>' % (metadata_entry["index"], self.escape(metadata_entry["type"]))
+                    aggregate += "</ol>"
+                aggregate += "</dd>"
+            # Insert before the trailing </dl>
+            parent = parent[:parent.index("</dl>")] + aggregate + parent[parent.index("</dl>"):]
+        return parent
