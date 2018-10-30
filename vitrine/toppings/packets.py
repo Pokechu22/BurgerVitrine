@@ -6,22 +6,9 @@
 
 from .topping import Topping
 import sys
+from abc import ABC
 
-class PacketsTopping(Topping):
-    KEY = "packets.packet"
-    NAME = "Packets"
-    ITEMS = ("Direction",
-             ("id", "ID"),
-             ("size", "Size"),
-             ("code", None))
-    SORTING = Topping.NUMERIC_SORT
-    NO_ESCAPE = ("code")
-    ESCAPE_TITLE = False
-
-    DIRECTIONS = {(True, True): "Both",
-                  (True, False): "Client to server",
-                  (False, True): "Server to client",
-                  (False, False): "None"}
+class InstructionsHandler(ABC, Topping):
     TYPES = {"byte": "writeByte",
              "boolean": "writeBoolean",
              "short": "writeShort",
@@ -44,29 +31,7 @@ class PacketsTopping(Topping):
              "long[]": "writeLongArray",
              "identifier": "writeIdentifier"
         }
-    PRIORITY = 7
-
-    def parse_entry(self, entry, key):
-        entry["Direction"] = self.DIRECTIONS[(
-            entry["from_client"],
-            entry["from_server"]
-        )]
-        if "instructions" in entry:
-            entry["code"] = self.code(entry["instructions"])
-        else:
-            entry["code"] = "(no instruction data - did the packet fail to parse?)"
-
-        title = key
-        if "name" in entry:
-            title = "%s (%s)" % (entry["name"], title)
-        elif self.wiki_links:
-            title = "%s (%s)" % (self.wiki.name(entry["id"], "Unknown"), title)
-
-        return (title, key)
-
-    def links(self, entry, key=None):
-        if self.wiki_links and self.wiki.url(entry["id"]) is not None:
-            yield ("wiki", self.wiki.url(entry["id"]))
+    NO_ESCAPE = ("code")
 
     def code(self, instructions):
         code = self.instructions(instructions)
@@ -162,3 +127,57 @@ class PacketsTopping(Topping):
 
     def indent(self, string, level):
         return "  " * level + string + "\n"
+
+class PacketsTopping(InstructionsHandler):
+    KEY = "packets.packet"
+    NAME = "Packets"
+    ITEMS = ("Direction",
+             ("id", "ID"),
+             ("size", "Size"),
+             ("code", None))
+    SORTING = Topping.NUMERIC_SORT
+    ESCAPE_TITLE = False
+
+    DIRECTIONS = {(True, True): "Both",
+                  (True, False): "Client to server",
+                  (False, True): "Server to client",
+                  (False, False): "None"}
+    PRIORITY = 7
+
+    def parse_entry(self, entry, key):
+        entry["Direction"] = self.DIRECTIONS[(
+            entry["from_client"],
+            entry["from_server"]
+        )]
+        if "instructions" in entry:
+            entry["code"] = self.code(entry["instructions"])
+        else:
+            entry["code"] = "(no instruction data - did the packet fail to parse?)"
+
+        title = key
+        if "name" in entry:
+            title = "%s (%s)" % (entry["name"], title)
+        elif self.wiki_links:
+            title = "%s (%s)" % (self.wiki.name(entry["id"], "Unknown"), title)
+
+        return (title, key)
+
+    def links(self, entry, key=None):
+        if self.wiki_links and self.wiki.url(entry["id"]) is not None:
+            yield ("wiki", self.wiki.url(entry["id"]))
+
+class MetadataSerializersTopping(InstructionsHandler):
+    KEY = "entities.dataserializers"
+    NAME = "Entity Metadata Serializers"
+    ITEMS = (("id", "ID"),
+             ("code", None))
+    SORTING = Topping.NUMERIC_SORT
+    PRIORITY = 6.9
+
+    def parse_entry(self, entry, key):
+        if "instructions" in entry:
+            entry["code"] = self.code(entry["instructions"])
+        else:
+            entry["code"] = "(no instruction data - did the serializer fail to parse?)"
+
+        return entry["name"] if "name" in entry else entry["id"]
