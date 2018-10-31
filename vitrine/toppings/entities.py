@@ -50,7 +50,16 @@ class EntitiesTopping(Topping):
                 if "data" in metadata:
                     aggregate += "<ol>"
                     for metadata_entry in metadata["data"]:
-                        aggregate += '<li value="%d"><a href="#entity_metadata_serializers:%s">%s</a></li>' % (metadata_entry["index"], self._anchor_escape(metadata_entry["serializer"]), metadata_entry["serializer"])
+                        aggregate += '<li value="%d">' % metadata_entry["index"]
+                        serializer = metadata_entry["serializer"]
+                        aggregate += '<a href="#entity_metadata_serializers:%s">' % self._anchor_escape(serializer)
+                        if "default" not in metadata_entry:
+                            value = "Unknown"
+                        elif serializer == "String":
+                            value = '"%s"' % metadata_entry["default"]
+                        else:
+                            value = metadata_entry["default"]
+                        aggregate += "%s</a>: %s</li>" % (serializer, value)
                     aggregate += "</ol>"
                 aggregate += "</dd>"
             # Insert before the trailing </dl>
