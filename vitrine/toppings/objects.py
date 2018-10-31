@@ -10,9 +10,9 @@ class ObjectsTopping(Topping):
     KEY = "entities.object"
     NAME = "Objects"
     ITEMS = (
-        ("object_id", "ID"),
+        ("id", "ID"),
         ("name", "Name"),
-        ("id", "Entity ID"),
+        ("entity_id", "Entity ID"),
         ("height", "Height"),
         ("width", "Width"),
         ("texture", "Texture")
@@ -20,10 +20,4 @@ class ObjectsTopping(Topping):
     PRIORITY = 7.1
 
     def parse_entry(self, entry, key=None):
-        entry["object_id"] = entry.pop("id")
-        if "entity" in entry:
-            entity = entry["entity"]
-            for key in ("id", "name", "width", "height", "texture"):
-                if key in entity:
-                    entry[key] = entity[key]
-        return entry.get("name", entry["object_id"])
+        return entry.get("name", entry["id"])
