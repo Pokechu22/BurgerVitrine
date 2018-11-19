@@ -70,6 +70,9 @@ class BlocksTopping(ItemTitleTopping):
         if "light" in entry:
             aggregate += "<dt>Light level</dt>"
             aggregate += "<dd>%s</dd>" % entry["light"]
+        if "block_entity" in entry:
+            aggregate += "<dt>Block entity</dt>"
+            aggregate += "<dd>%s</dd>" % entry["block_entity"]
 
         if "states" in entry:
             aggregate += "<dt>State IDs</dt>"
