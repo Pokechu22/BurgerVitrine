@@ -11,7 +11,7 @@ class SoundsTopping(Topping):
     KEY = "sounds"
     NAME = "Sounds"
     PRIORITY = 3.5
-    RESOURCES_SITE = "http://resources.download.minecraft.net/%s/%s"
+    RESOURCES_SITE = "https://resources.download.minecraft.net/%s/%s"
 
     def parse_entry(self, entry, key=None):
         return entry["name"]
