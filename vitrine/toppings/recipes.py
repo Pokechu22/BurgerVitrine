@@ -88,22 +88,27 @@ class RecipesTopping(Topping):
         if item is None:
             return self.EMPTY
 
+        if self.diff:
+            all_data = self.all_data[self.side]
+        else:
+            all_data = self.all_data
+
         if item["type"] == "item":
-            if "items" not in self.all_data:
+            if "items" not in all_data:
                 return self.EMPTY
-            if item["name"] not in self.all_data["items"]["item"]:
+            if item["name"] not in all_data["items"]["item"]:
                 return self.EMPTY
-            material = self.all_data["items"]["item"][item["name"]]
+            material = all_data["items"]["item"][item["name"]]
         elif item["type"] == "block":
-            if "blocks" not in self.all_data:
+            if "blocks" not in all_data:
                 return self.EMPTY
-            if item["name"] not in self.all_data["blocks"]["block"]:
+            if item["name"] not in all_data["blocks"]["block"]:
                 return self.EMPTY
-            material = self.all_data["blocks"]["block"][item["name"]]
+            material = all_data["blocks"]["block"][item["name"]]
         else:
             return self.EMPTY
 
-        if self.side is not None:
+        if isinstance(material, list):
             material = material[0] if self.side == False else material[1]
 
         if "display_name" in material:

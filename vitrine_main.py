@@ -71,7 +71,7 @@ def embed(resources, html):
               </html>""" % (resources, resources, resources, html)
 
 
-def generate_html(toppings, data, wiki=None, highlight=None, progress_callback=None):
+def generate_html(toppings, data, all_data=None, wiki=None, highlight=None, progress_callback=None):
     """
     Generates HTML for a version.
 
@@ -85,6 +85,11 @@ def generate_html(toppings, data, wiki=None, highlight=None, progress_callback=N
     diff = not isinstance(data, list)
     if not diff:
         data = data[0]
+    if all_data == None:
+        if diff:
+            all_data = {False: data, True: data}
+        else:
+            all_data = data
 
     # Generate HTML
     aggregate = []
@@ -106,7 +111,7 @@ def generate_html(toppings, data, wiki=None, highlight=None, progress_callback=N
             continue
 
         try:
-            aggregate.append(str(topping(obj, data, diff, wiki, highlight)))
+            aggregate.append(str(topping(obj, all_data, diff, wiki, highlight)))
         except:
             from html import escape
             aggregate.append('<h2>%s</h2><div class="entry"><h3>Error</h3><pre>%s</pre></div>' % (topping.NAME, escape(traceback.format_exc())))
@@ -130,7 +135,9 @@ def main():
                 "wiki",
                 "verbose",
                 "resources=",
-                "help"
+                "help",
+                "orig_left=",
+                "orig_right="
             ]
         )
     except getopt.GetoptError as err:
@@ -143,6 +150,7 @@ def main():
     wiki_links = False
     progress_callback = None
     resources = "resources/"
+    all_data = None
 
     for o, a in opts:
         if o in ("-o", "--output"):
@@ -160,6 +168,22 @@ def main():
         elif o in ("-h", "--help"):
             usage()
             sys.exit(0)
+        elif o == "--orig_left":
+            if not all_data:
+                all_data = {}
+            with open(a) as fin:
+                data = json.load(fin)
+                if isinstance(data, list):
+                    data = data[0]
+                all_data[False] = data
+        elif o == "--orig_right":
+            if not all_data:
+                all_data = {}
+            with open(a) as fin:
+                data = json.load(fin)
+                if isinstance(data, list):
+                    data = data[0]
+                all_data[True] = data
 
     toppings = import_toppings()
     highlight = None
@@ -196,7 +220,7 @@ def main():
         wiki = None
 
     # Generate HTML
-    html = generate_html(toppings, data, wiki, highlight, progress_callback)
+    html = generate_html(toppings, data, all_data, wiki, highlight, progress_callback)
 
     # Create full page, if requested
     if not only_body:
