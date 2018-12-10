@@ -108,7 +108,7 @@ class RecipesTopping(Topping):
             return self.EMPTY
 
         if isinstance(material, list):
-            material = material[0] if self.side == False else material[1]
+            material = material[self.side]
 
         if "display_name" in material:
             title = material["display_name"]

@@ -87,7 +87,8 @@ def generate_html(toppings, data, all_data=None, wiki=None, highlight=None, prog
         data = data[0]
     if all_data == None:
         if diff:
-            all_data = {False: data, True: data}
+            # We don't actually have all the data; this is the best we can do
+            all_data = {0: data, 1: data}
         else:
             all_data = data
 
@@ -175,7 +176,7 @@ def main():
                 data = json.load(fin)
                 if isinstance(data, list):
                     data = data[0]
-                all_data[False] = data
+                all_data[0] = data
         elif o == "--orig_right":
             if not all_data:
                 all_data = {}
@@ -183,7 +184,7 @@ def main():
                 data = json.load(fin)
                 if isinstance(data, list):
                     data = data[0]
-                all_data[True] = data
+                all_data[1] = data
 
     toppings = import_toppings()
     highlight = None
