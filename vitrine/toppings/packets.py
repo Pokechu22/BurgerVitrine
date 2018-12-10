@@ -135,7 +135,6 @@ class PacketsTopping(InstructionsHandler):
              ("id", "ID"),
              ("size", "Size"),
              ("code", None))
-    SORTING = Topping.NUMERIC_SORT
     ESCAPE_TITLE = False
 
     DIRECTIONS = {(True, True): "Both",
@@ -171,7 +170,6 @@ class MetadataSerializersTopping(InstructionsHandler):
     NAME = "Entity Metadata Serializers"
     ITEMS = (("id", "ID"),
              ("code", None))
-    SORTING = Topping.NUMERIC_SORT
     PRIORITY = 6.9
 
     def parse_entry(self, entry, key):

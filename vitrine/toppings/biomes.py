@@ -31,8 +31,3 @@ class BiomesTopping(Topping):
             color = "none"
         return '%s<div class="color" style="background:%s;"></div>' % (
                 entry["name"], color), entry["name"]
-
-    def SORTING(self, k_v):
-        # if "id" in v:
-        #    return v["id"], v
-        return k_v

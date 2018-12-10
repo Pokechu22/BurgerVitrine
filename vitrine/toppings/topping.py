@@ -13,7 +13,6 @@ class Topping(object):
     ITEMS = (("json", None),)
     NO_ESCAPE = ()
     ESCAPE_TITLE = True
-    SORTING = None
     PRIORITY = 0
 
     NO_ENTRIES = '<span class="info">No entries</span>'
@@ -46,14 +45,13 @@ class Topping(object):
             if len(self.data) == 0:
                 aggregate += self.NO_ENTRIES
             else:
-                for key, entry in sorted(self.data.items(),
-                                         key=self.SORTING):
+                for key, entry in sorted(self.data.items()):
                     aggregate += self._parse_entry(entry, key)
         elif isinstance(self.data, list):
             if len(self.data) == 0:
                 aggregate += self.NO_ENTRIES
             else:
-                for entry in sorted(self.data, key=self.SORTING):
+                for entry in sorted(self.data):
                     aggregate += self._parse_entry(entry)
         else:
             aggregate += '<span class="info">Unexpected data</span>'
@@ -142,6 +140,3 @@ class Topping(object):
             return anchor
         else:
             return anchor + ":" + self._anchor_escape(child)
-
-    def NUMERIC_SORT(self, k_v):
-        return k_v

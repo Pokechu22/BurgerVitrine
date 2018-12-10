@@ -10,7 +10,6 @@ class RecipesTopping(Topping):
     KEY = "recipes"
     NAME = "Recipes"
     NO_ESCAPE = ("json")
-    SORING = Topping.NUMERIC_SORT
     PRIORITY = 8
 
     def _get_entry_html(self, entry, key=None):

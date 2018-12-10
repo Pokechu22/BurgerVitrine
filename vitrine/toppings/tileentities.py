@@ -26,6 +26,3 @@ class TileEntities(Topping):
             aggregate += "<dd>%s</dd>" % ("<br />".join(block for block in entry['blocks']))
         aggregate += "</dl>"
         return aggregate
-
-    def SORTING(self, k_v):
-        return k_v

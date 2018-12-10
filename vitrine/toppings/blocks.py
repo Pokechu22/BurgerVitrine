@@ -17,16 +17,6 @@ class BlocksTopping(ItemTitleTopping):
     ESCAPE_TITLE = False
     PRIORITY = 10
 
-    def SORTING(self, k_v):
-        k, v = k_v
-        if self.diff:
-            if v[0] is not None:
-                return v[0]["text_id"], k
-            else:
-                return v[1]["text_id"], k
-        else:
-            return v["text_id"], k
-
     def parse_entry(self, entry, key):
         if "display_name" in entry:
             title = entry["display_name"]
