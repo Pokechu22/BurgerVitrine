@@ -42,7 +42,7 @@ class EntitiesTopping(Topping):
                     source = "Own metadata:"
                 elif "entity" in metadata:
                     # Concrete parent
-                    source = 'Inhertits from <a href="#%s">%s</a>' % (self.anchor(metadata["entity"]), metadata["entity"])
+                    source = 'Inherits from <a href="#%s">%s</a>' % (self.anchor(metadata["entity"]), metadata["entity"])
                 else:
                     # Abstract parent
                     source = "Abstract parent:"
