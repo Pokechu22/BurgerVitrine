@@ -6,9 +6,8 @@
 
 from .topping import Topping
 import sys
-from abc import ABC
 
-class InstructionsHandler(ABC, Topping):
+class InstructionsHandler(Topping):
     TYPES = {"byte": "writeByte",
              "boolean": "writeBoolean",
              "short": "writeShort",
