@@ -45,6 +45,23 @@ class SoundsTopping(Topping):
         if "hash" in sound:
             sound_hash = sound["hash"]
             link = self.RESOURCES_SITE % (sound_hash[0:2], sound_hash)
-            return "<a title=\"%s\" href=\"%s\">%s</a><span><button data-link=\"%s\" onclick=\"playSound(this)\">Play</button></span>" % (sound_hash, link, sound_name, link)
+            extra_info = ""
+            if "pitch" in sound and sound["pitch"] != 1:
+                pitch_data = " data-pitch=\"%s\"" % sound["pitch"]
+                extra_info = "Pitch %s" % sound["pitch"]
+            else:
+                pitch_data = ""
+            if "volume" in sound and sound["volume"] != 1:
+                volume_data = " data-volume=\"%s\"" % sound["volume"]
+                if extra_info != "":
+                    extra_info += ", "
+                extra_info += "Volume %s" % sound["volume"]
+            else:
+                volume_data = ""
+            if extra_info != "":
+                extra_info = "<br>(" + extra_info + ")"
+            a_tag = "<a title=\"%s\" href=\"%s\">%s</a>" % (sound_hash, link, sound_name)
+            play_button = "<span><button data-link=\"%s\"%s%s onclick=\"playSound(this)\">Play</button></span>" % (link, pitch_data, volume_data)
+            return a_tag + extra_info + play_button
         else:
             return sound_name
